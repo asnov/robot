@@ -1,0 +1,19 @@
+main {
+	text-align: center;
+}
+label {
+	font-weight: bold;
+}
+#command {
+	font-size: 1em;
+}
+#report {
+	height: 20px;
+	color: #0892d0;
+}
+#report span {
+	padding-right: 10px;
+}
+#report #error {
+	color: #FF0000;
+}
