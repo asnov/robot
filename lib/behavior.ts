@@ -1,9 +1,9 @@
 'use strict';
 
-import Blueshell from 'blueshell';
+import * as Blueshell from 'blueshell';
 const rc = Blueshell.resultCodes;
 
-class AtGoal extends Blueshell.Action {
+class AtGoal extends Blueshell.Action<any, any> {		// FIXME: specify the types
 	constructor() {
 		super('at-goal');
 	}
@@ -19,7 +19,7 @@ class AtGoal extends Blueshell.Action {
 	}
 }
 
-class AtWall extends Blueshell.Action {
+class AtWall extends Blueshell.Action<any, any> {		// FIXME: specify the types
 	constructor() {
 		super('at-goal');
 	}
@@ -34,7 +34,7 @@ class AtWall extends Blueshell.Action {
 	}
 }
 
-class Move extends Blueshell.Action {
+class Move extends Blueshell.Action<any, any> {		// FIXME: specify the types
 	constructor() {
 		super('move');
 	}
@@ -47,7 +47,7 @@ class Move extends Blueshell.Action {
 	}
 }
 
-export class Behavior extends Blueshell.LatchedSelector {
+export class Behavior extends Blueshell.LatchedSelector<any, any> {		// FIXME: specify the types
 	constructor() {
 		super('robot-ai', [
 			new AtGoal(),
@@ -55,4 +55,4 @@ export class Behavior extends Blueshell.LatchedSelector {
 			new Move()
 		]);
 	}
-};
+}

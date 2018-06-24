@@ -1,10 +1,13 @@
 'use strict';
+import {ExtendedWindowObj} from '../types';
+
+declare const window: ExtendedWindowObj;
+
 
 export class ReportView {
-	constructor() {
-		//        this.errorMessageEle = document.getElementById("error");
-		this.reportMessageEle = document.getElementById("report");
-	}
+
+	// errorMessageEle = document.getElementById("error");
+	reportMessageEle = document.getElementById('report');
 
 	renderReport() {
 		var currentRobot = window.simulator.getCurrentRobot();

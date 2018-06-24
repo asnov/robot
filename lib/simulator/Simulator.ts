@@ -1,12 +1,16 @@
 'use strict';
 
-import MainLoop from 'mainloop.js';
+import * as MainLoop from 'mainloop.js';
 
 import {Robot} from './Robot';
 import {Goal} from './Goal';
 import {InputView} from './InputView';
 import {ReportView} from './ReportView';
 import {CanvasView} from './CanvasView';
+import {ExtendedWindowObj} from '../types';
+
+declare const window: ExtendedWindowObj;
+
 
 export class Simulator {
 	constructor() {
@@ -17,12 +21,12 @@ export class Simulator {
 		this.restart();
 
 		MainLoop
-		.setUpdate(() => {
-		})
-		.setDraw(() => {
-			window.canvasView.render();
-		})
-		.start();
+			.setUpdate(() => {
+			})
+			.setDraw(() => {
+				window.canvasView.render();
+			})
+			.start();
 
 	}
 
@@ -35,6 +39,7 @@ export class Simulator {
 	};
 
 	/* --------------------------------------------------- */
+
 	/*         end of command functions
 	 /* --------------------------------------------------- */
 	printErrors(msg) {
@@ -46,4 +51,4 @@ export class Simulator {
 		window.goal = new Goal();
 	}
 
-};
+}
