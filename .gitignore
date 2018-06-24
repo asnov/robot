@@ -1,1 +1,6 @@
+#libraries
 node_modules
+
+#automatically generated files
+lib/**/*.js
+lib/**/*.js.map
