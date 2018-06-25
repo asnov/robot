@@ -2,16 +2,21 @@
 
 import {Behavior} from '../behavior';
 import {getRandomInt} from '../utils';
+import {ExtendedWindowObj} from '../types';
+
+
+declare const window: ExtendedWindowObj;
 
 let behavior = new Behavior();
 
 export class Robot {
 
+	x = getRandomInt(0, 4);
+	y = getRandomInt(0, 4);
+	color = 'black';
+	f = ['north', 'east', 'south', 'west'][getRandomInt(0, 3)];
+
 	constructor() {
-		this.x = getRandomInt(0, 4);
-		this.y = getRandomInt(0, 4);
-		this.color = 'black';
-		this.f = ['north', 'east', 'south', 'west'][getRandomInt(0, 3)];
 		console.log(`Robot positioned at ${this.x}, ${this.y}, ${this.f}`);
 	}
 
@@ -19,20 +24,20 @@ export class Robot {
 		behavior.handleEvent(this, event);
 	}
 
-	/* --------------------------------------------------- */
-	/*         the following are command functions
-	 /* --------------------------------------------------- */
+	/* --------------------------------------------------- *
+	 *         the following are command functions				 *
+	 * --------------------------------------------------- */
 	place(cmd) {
-		var newPos = cmd.split(","); // get x y f from the command
+		var newPos = cmd.split(','); // get x y f from the command
 		if (newPos.length < 3) {
-			this.printErrors("incorrect position / direction");
+			window.simulator.printErrors('incorrect position / direction');
 		} else {
 			var newX = parseInt(newPos[0].trim()),
 				newY = parseInt(newPos[1].trim()),
 				newF = newPos[2].trim().toLowerCase();
 
-			if (window.canvasView.validateBound(newX, "maxX") &&
-				window.canvasView.validateBound(newY, "maxY") &&
+			if (window.canvasView.validateBound(newX, 'maxX') &&
+				window.canvasView.validateBound(newY, 'maxY') &&
 				window.canvasView.validateFacing(newF)) {
 				this.x = newX;
 				this.y = newY;
@@ -44,40 +49,41 @@ export class Robot {
 	move() {
 
 		switch (this.f) {
-		case "north": {
-			let newY = this.y + 1;
-			if (window.canvasView.validateBound(newY, "maxY")) {
-				this.y = newY;
+			case 'north': {
+				let newY = this.y + 1;
+				if (window.canvasView.validateBound(newY, 'maxY')) {
+					this.y = newY;
+				}
+				break;
 			}
-			break;
-		}
-		case "south": {
-			let newY = this.y - 1;
-			if (window.canvasView.validateBound(newY, "maxY")) {
-				this.y = newY;
+			case 'south': {
+				let newY = this.y - 1;
+				if (window.canvasView.validateBound(newY, 'maxY')) {
+					this.y = newY;
+				}
+				break;
 			}
-			break;
-		}
-		case "east": {
-			let newX = this.x + 1;
-			if (window.canvasView.validateBound(newX, "maxX")) {
-				this.x = newX;
+			case 'east': {
+				let newX = this.x + 1;
+				if (window.canvasView.validateBound(newX, 'maxX')) {
+					this.x = newX;
+				}
+				break;
 			}
-			break;
-		}
-		case "west": {
-			let newX = this.x - 1;
-			if (window.canvasView.validateBound(newX, "maxX")) {
-				this.x = newX;
+			case 'west': {
+				let newX = this.x - 1;
+				if (window.canvasView.validateBound(newX, 'maxX')) {
+					this.x = newX;
+				}
+				break;
 			}
-			break;
-		}
-		default:
-			break;
+			default:
+				break;
 		}
 
 
 	}
+
 	left() {
 		this.rotate(false); // get the next from this.robotFacing array in anti-clockwise direction
 	}
@@ -87,7 +93,7 @@ export class Robot {
 	}
 
 	rotate(clockwise) {
-		var originalFacing = this.f,
+		let originalFacing = this.f,
 			originalFacingIndex = window.canvasView.robotFacing.indexOf(originalFacing),
 			newFacingIndex,
 			totalFacing = window.canvasView.robotFacing.length;

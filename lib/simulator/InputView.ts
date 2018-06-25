@@ -1,5 +1,10 @@
 'use strict';
 
+import {ExtendedWindowObj} from '../types';
+
+declare const window: ExtendedWindowObj;
+
+
 const commands = {
 	'move': () => {
 		window.simulator.getCurrentRobot().move();
@@ -22,14 +27,12 @@ const commands = {
 };
 
 export class InputView {
-	constructor() {
-		this.commandBox = document.getElementById('command');
 
-	};
+	commandBox = document.getElementById('command') as HTMLInputElement;
 
 	processCommand(value) {
 		this.commandBox.select(); // auto select all input for easier editing
-		console.log(value)
+		console.log(value);
 		window.simulator.resetContents(); // remove previous status and errors
 
 		const sanitizedValue = value.trim().toLocaleLowerCase(),
@@ -40,7 +43,7 @@ export class InputView {
 		if (cmdMethod) {
 			cmdMethod(sanitizedValueArray.join()); // call controller functions by name
 		} else {
-			window.simulator.printErrors("Incorrect command");
+			window.simulator.printErrors('Incorrect command');
 		}
 	}
 }

@@ -5,7 +5,7 @@
   "description": "Robot Simulator",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --watch --progress --port 8081"
+    "start": "tsc && webpack-dev-server --watch --progress --port 8081 --mode=development"
   },
   "author": "jbcpollak <josh@6river.com> (http://6river.com/)",
   "repository": {
@@ -30,6 +30,7 @@
     "path": "0.12.7",
     "postcss-loader": "^2.1.5",
     "style-loader": "^0.21.0",
+    "typescript": "^2.9.2",
     "util": "0.10.3",
     "webpack": "^4.8.1",
     "webpack-cli": "^2.1.3",

@@ -1,12 +1,13 @@
 'use strict';
 
-import {getRandomInt} from '../utils.js';
+import {getRandomInt} from '../utils';
 
 export class Goal {
 
+	x = getRandomInt(0, 4);
+	y = getRandomInt(0, 4);
+
 	constructor() {
-		this.x = getRandomInt(0, 4);
-		this.y = getRandomInt(0, 4);
 		console.log(`Goal positioned at ${this.x}, ${this.y}`);
 	}
 
