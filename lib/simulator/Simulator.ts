@@ -15,10 +15,14 @@ export const NUMBER_OF_ROBOTS = 5;
 
 export class Simulator {
 
+	inputView: InputView;
+	reportView: ReportView = new ReportView();
+	robots: Robot[];
+	goal: Goal;
+
 	constructor() {
-		window.inputView = new InputView();
+		this.inputView = new InputView();
 		window.canvasView = new CanvasView();
-		window.reportView = new ReportView();
 
 		this.restart();
 
@@ -26,17 +30,18 @@ export class Simulator {
 			.setUpdate(() => {
 			})
 			.setDraw(() => {
-				window.canvasView.render(window.robots, window.goal);
+				window.canvasView.render(this.robots, this.goal);
+				this.reportView.renderReport(this.robots);
 			})
 			.start();
 	}
 
 	getRobotById(robotId: number) {
-		return window.robots[robotId];
+		return this.robots[robotId];
 	}
 
 	resetContents() {
-		window.reportView.clear();
+		this.reportView.clear();
 	};
 
 	/* --------------------------------------------------- */
@@ -45,25 +50,25 @@ export class Simulator {
 	 /* --------------------------------------------------- */
 	printErrors(msg) {
 		console.error(msg);
-		window.reportView.renderErrors(msg);
+		this.reportView.renderErrors(msg);
 	}
 
 	restart() {
-		window.goal = new Goal();
-		window.robots = [];
-		while (window.robots.length < NUMBER_OF_ROBOTS) {
-			const newRobot = Robot.assemble(window.goal);
+		this.goal = new Goal();
+		this.robots = [];
+		while (this.robots.length < NUMBER_OF_ROBOTS) {
+			const newRobot = Robot.assemble(this.goal);
 			// checking position is empty
 			if (
-				window.robots.some(robot => (
+				this.robots.some(robot => (
 					robot.x === newRobot.x &&
 					robot.y === newRobot.y)) ||
-				window.goal.x === newRobot.x &&
-				window.goal.y === newRobot.y
+				this.goal.x === newRobot.x &&
+				this.goal.y === newRobot.y
 			) {
 				continue;
 			}
-			window.robots.push(newRobot);
+			this.robots.push(newRobot);
 			console.log(`Robot "${newRobot.color}" positioned at ${newRobot.x}, ${newRobot.y}, ${newRobot.f}`);
 		}
 	}

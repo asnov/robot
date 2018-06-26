@@ -97,7 +97,6 @@ export class CanvasView {
 		for (let robot of robots) {
 			this.renderRobot(robot);
 		}
-		window.reportView.renderReport(robots);
 	}
 
 	renderRobot(robot: Robot) {
