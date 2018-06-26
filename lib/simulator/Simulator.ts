@@ -22,28 +22,13 @@ export class Simulator {
 
 		this.restart();
 
-		const fpsEl = document.getElementById('fps') as HTMLDivElement;
-		let updateCount = 0;
-		let drawCount = 0;
 		MainLoop
-			.setUpdate((delta: number) => {
-				// console.log(`update:`, delta, updateCount += delta);
+			.setUpdate(() => {
 			})
-			.setDraw((interpolationPercentage: number) => {
-				if (drawCount++ % 100 === 0) {
-					// console.log(`draw:`, interpolationPercentage);
-				}
-				window.canvasView.render(window.robots, window.goal, interpolationPercentage);
-			})
-			.setEnd((fps, panic) => {
-				fpsEl.innerHTML = `<p>${fps.toFixed(2)} FPS</p>`;
-				if (panic) {
-					var discardedTime = Math.round(MainLoop.resetFrameDelta());
-					console.warn('Main loop panicked, probably because the browser tab was put in the background. Discarding ' + discardedTime + 'ms');
-				}
+			.setDraw(() => {
+				window.canvasView.render(window.robots, window.goal);
 			})
 			.start();
-
 	}
 
 	getRobotById(robotId: number) {

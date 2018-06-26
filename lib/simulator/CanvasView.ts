@@ -22,7 +22,7 @@ export class CanvasView {
 	robotFacing = ['north', 'east', 'south', 'west']; // clockwise
 	robotSize = 25; // is the arrow size actually
 
-	render(robots: Robot[], goal: Goal, interpolationPercentage: number) {
+	render(robots: Robot[], goal: Goal) {
 		this.context.clearRect(0, 0, 551, 580); // TODO: Magic dimensions from index.ejs
 		this.renderCanvas();
 		this.renderGoal(robots, goal);
