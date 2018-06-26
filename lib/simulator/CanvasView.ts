@@ -1,10 +1,11 @@
 'use strict';
 
 import {ExtendedWindowObj} from '../types';
-import {Robot} from './Robot';
+import {Robot, SIDES_OF_THE_WORLD} from './Robot';
 import {Goal} from './Goal';
 
 declare const window: ExtendedWindowObj;
+export const FIELD_ELEMENT_ID = 'c';
 
 
 export class CanvasView {
@@ -16,10 +17,9 @@ export class CanvasView {
 	yStart = 50; // axis y starts from 50px
 	xEnd = this.xStart + this.squareSize * this.maxX; // axis x starts from 50px
 	yEnd = this.yStart + this.squareSize * this.maxY; // axis y starts from 50px
-	canvas = document.getElementById('c') as HTMLCanvasElement;
+	canvas = document.getElementById(FIELD_ELEMENT_ID) as HTMLCanvasElement;
 	context = this.canvas.getContext('2d');
 
-	robotFacing = ['north', 'east', 'south', 'west']; // clockwise
 	robotSize = 25; // is the arrow size actually
 
 	render(robots: Robot[], goal: Goal) {
@@ -85,7 +85,7 @@ export class CanvasView {
 	}
 
 	validateFacing(face) {
-		if (this.robotFacing.indexOf(face.toLowerCase()) < 0) {
+		if (SIDES_OF_THE_WORLD.indexOf(face.toLowerCase()) < 0) {
 			window.simulator.printErrors('Wrong facing!');
 			return false;
 		} else {
