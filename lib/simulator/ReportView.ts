@@ -1,27 +1,34 @@
 'use strict';
-import {ExtendedWindowObj} from '../types';
+import {Robot} from './Robot';
 
-declare const window: ExtendedWindowObj;
-
+export const REPORT_ELEMENT_ID = 'report';
+export const ERROR_ELEMENT_ID = 'error';
 
 export class ReportView {
 
-	// errorMessageEle = document.getElementById("error");
-	reportMessageEle = document.getElementById('report');
+	reportMessageEle = document.getElementById(REPORT_ELEMENT_ID) as HTMLDivElement;
+	errorMessageEle = document.getElementById(ERROR_ELEMENT_ID) as HTMLDivElement;
 
-	renderReport() {
-		var currentRobot = window.simulator.getCurrentRobot();
-		this.reportMessageEle.innerHTML = '<span>' + 'Axis X: ' + currentRobot.x + '</span>' +
-			'<span>' + 'Axis Y: ' + currentRobot.y + '</span>' +
-			'<span>' + 'Facing: ' + currentRobot.f + '</span>';
+	renderReport(robots: Robot[]) {
+		let reportText = '';
+		for (let i = 0; i < robots.length; i++) {
+			const currentRobot = robots[i];
+			reportText += `<p>${i}:
+					<span>Axis X: ${currentRobot.x}</span>
+					<span>Axis Y: ${currentRobot.y}</span>
+					<span>Facing: ${currentRobot.f}</span>
+				</p>`;
+		}
+		this.reportMessageEle.innerHTML = reportText;
 	}
 
 	renderErrors(msg) {
-		this.reportMessageEle.innerHTML = '<span id="error">' + msg + '</span>';
+		this.errorMessageEle.innerHTML = '<span id="error">' + msg + '</span>';
 	}
 
 	clear() {
 		this.reportMessageEle.innerHTML = '';
-		//        this.errorMessageEle.innerHTML = '';
+		this.errorMessageEle.innerHTML = '';
 	}
+
 }
