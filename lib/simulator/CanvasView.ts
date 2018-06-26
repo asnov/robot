@@ -1,6 +1,8 @@
 'use strict';
 
 import {ExtendedWindowObj} from '../types';
+import {Robot} from './Robot';
+import {Goal} from './Goal';
 
 declare const window: ExtendedWindowObj;
 
@@ -20,21 +22,11 @@ export class CanvasView {
 	robotFacing = ['north', 'east', 'south', 'west']; // clockwise
 	robotSize = 25; // is the arrow size actually
 
-	render() {
+	render(robots: Robot[], goal: Goal, interpolationPercentage: number) {
 		this.context.clearRect(0, 0, 551, 580); // TODO: Magic dimensions from index.ejs
 		this.renderCanvas();
-		this.renderGoal(window.simulator.getCurrentRobot());
-		this.renderRobot();
-
-	}
-
-	stepAi() {
-		const robot = window.simulator.getCurrentRobot();
-		robot.step(this.buildEvent(robot, window.goal));
-	}
-
-	atGoal(robot, goal) {
-		return (robot.x === goal.x && robot.y === goal.y);
+		this.renderGoal(robots, goal);
+		this.renderAllRobots(robots);
 	}
 
 	wallInFront(robot) {
@@ -56,15 +48,6 @@ export class CanvasView {
 				return false;
 		}
 
-	}
-
-	buildEvent(robot, goal) {
-		return {
-			// Note distance to goal is actually the square of the distance to goal
-			distanceToGoal: Math.pow(robot.x - goal.x, 2) + Math.pow(robot.y - goal.y, 2),
-			atGoal: this.atGoal(robot, goal),
-			wallInFront: this.wallInFront(robot),
-		};
 	}
 
 	renderCanvas() {
@@ -110,10 +93,16 @@ export class CanvasView {
 		}
 	}
 
-	renderRobot() {
-		const robot = window.simulator.getCurrentRobot(),
-			robotAxisX = (robot.x + 1) * 100, // the center of the destination grid horizontally
-			robotAxisY = (this.maxY - robot.y) * 100; // the center of the destination grid vertically
+	renderAllRobots(robots: Robot[]) {
+		for (let robot of robots) {
+			this.renderRobot(robot);
+		}
+		window.reportView.renderReport(robots);
+	}
+
+	renderRobot(robot: Robot) {
+		const robotAxisX = (robot.x + 1) * 100; 					// the center of the destination grid horizontally
+		const robotAxisY = (this.maxY - robot.y) * 100; 	// the center of the destination grid vertically
 
 		const path = new Path2D();
 		switch (robot.f) {
@@ -146,13 +135,9 @@ export class CanvasView {
 		this.context.fillStyle = robot.color;
 		this.context.stroke(path);
 		this.context.fill(path);
-
-		window.reportView.renderReport();
 	}
 
-	renderGoal(robot) {
-		const goal = window.goal;
-
+	renderGoal(robots: Robot[], goal: Goal) {
 		const centerX = (goal.x + 1) * 100;
 		const centerY = (this.maxY - goal.y) * 100;
 		const radius = 35;
@@ -163,8 +148,11 @@ export class CanvasView {
 		path.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
 		path.closePath();
 
-		if (this.atGoal(robot, goal)) {
-			context.fillStyle = 'blue';
+		// changing goal color when somebody reached the goal
+		for (let robot of robots) {
+			if (robot.atGoal() && robot.goal === goal) {
+				context.fillStyle = 'blue';
+			}
 		}
 
 		context.stroke(path);

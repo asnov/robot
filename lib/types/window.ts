@@ -10,6 +10,6 @@ export interface ExtendedWindowObj extends Window {
 	inputView: InputView;
 	canvasView: CanvasView;
 	reportView: ReportView;
-	robot: Robot;
+	robots: Robot[];
 	goal: Goal;
 }
