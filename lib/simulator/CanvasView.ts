@@ -10,8 +10,8 @@ export const FIELD_ELEMENT_ID = 'c';
 
 export class CanvasView {
 
-	maxX = 5; // x total
-	maxY = 5; // y total
+	maxX = 3; // x total
+	maxY = 3; // y total
 	squareSize = 100; // all grids are equal width and height
 	xStart = 50; // axis x starts from 50px
 	yStart = 50; // axis y starts from 50px
@@ -72,7 +72,7 @@ export class CanvasView {
 		this.context.stroke();
 	}
 
-	validateBound(input, toCheckAxis) {
+	isBoundValid(input: number, toCheckAxis: string): boolean {
 		if (isNaN(input)) {
 			window.simulator.printErrors('Please enter a numeric coordinates!');
 			return false;
@@ -84,7 +84,7 @@ export class CanvasView {
 		}
 	}
 
-	validateFacing(face) {
+	static isFacingValid(face: string): boolean {
 		if (SIDES_OF_THE_WORLD.indexOf(face.toLowerCase()) < 0) {
 			window.simulator.printErrors('Wrong facing!');
 			return false;

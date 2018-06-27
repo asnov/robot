@@ -7,15 +7,13 @@ import {Goal} from './Goal';
 import {InputView} from './InputView';
 import {ReportView} from './ReportView';
 import {CanvasView} from './CanvasView';
-import {ExtendedWindowObj} from '../types';
 
-declare const window: ExtendedWindowObj;
 export const NUMBER_OF_ROBOTS = 5;
 
 
 export class Simulator {
 
-	canvasView: CanvasView = window.canvasView = new CanvasView();
+	canvasView: CanvasView = new CanvasView();
 	reportView: ReportView = new ReportView();
 	inputView: InputView;
 	robots: Robot[];
@@ -54,10 +52,15 @@ export class Simulator {
 	}
 
 	restart() {
-		this.goal = new Goal();
+		this.goal = new Goal(this.canvasView);
 		this.robots = [];
-		while (this.robots.length < NUMBER_OF_ROBOTS) {
-			const newRobot = Robot.assemble(this.goal);
+
+		const newRobotsCount = Math.min(NUMBER_OF_ROBOTS, this.canvasView.maxX * this.canvasView.maxY - 1);
+		if (newRobotsCount < NUMBER_OF_ROBOTS) {
+			console.warn(`The field ${this.canvasView.maxX}x${this.canvasView.maxY} can fit only ${newRobotsCount} robots.`);
+		}
+		while (this.robots.length < newRobotsCount) {
+			const newRobot = Robot.assemble(this.goal, this.canvasView);
 			// checking position is empty
 			if (
 				this.robots.some(robot => (
