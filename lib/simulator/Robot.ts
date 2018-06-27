@@ -4,6 +4,7 @@ import {Behavior} from '../behavior';
 import {getRandomInt} from '../utils';
 import {ExtendedWindowObj} from '../types';
 import {Goal} from './Goal';
+import {CanvasView} from './CanvasView';
 
 
 declare const window: ExtendedWindowObj;
@@ -15,12 +16,13 @@ let behavior = new Behavior();
 
 export class Robot {
 
-	static assemble = (goal: Goal): Robot => new Robot(
-		getRandomInt(0, 4),
-		getRandomInt(0, 4),
+	static assemble = (goal: Goal, canvasView: CanvasView): Robot => new Robot(
+		getRandomInt(0, canvasView.maxX - 1),
+		getRandomInt(0, canvasView.maxY - 1),
 		CSS_COLOR_NAMES[getRandomInt(0, CSS_COLOR_NAMES.length - 1)],
 		SIDES_OF_THE_WORLD[getRandomInt(0, SIDES_OF_THE_WORLD.length - 1)],
 		goal,
+		canvasView,
 	);
 
 	protected constructor(
@@ -29,6 +31,7 @@ export class Robot {
 		public color: string,
 		public f: string,
 		public goal: Goal,
+		public canvasView: CanvasView,
 	) {
 	}
 
@@ -55,7 +58,7 @@ export class Robot {
 			// Note distance to goal is actually the square of the distance to goal
 			distanceToGoal: Math.pow(this.x - this.goal.x, 2) + Math.pow(this.y - this.goal.y, 2),
 			atGoal: this.atGoal(),
-			wallInFront: window.canvasView.wallInFront(this),
+			wallInFront: this.canvasView.wallInFront(this),
 		};
 	}
 
@@ -72,9 +75,9 @@ export class Robot {
 				newY = parseInt(newPos[1].trim()),
 				newF = newPos[2].trim().toLowerCase();
 
-			if (window.canvasView.validateBound(newX, 'maxX') &&
-				window.canvasView.validateBound(newY, 'maxY') &&
-				window.canvasView.validateFacing(newF)) {
+			if (this.canvasView.isBoundValid(newX, 'maxX') &&
+				this.canvasView.isBoundValid(newY, 'maxY') &&
+				CanvasView.isFacingValid(newF)) {
 				this.x = newX;
 				this.y = newY;
 				this.f = newF;
@@ -87,28 +90,28 @@ export class Robot {
 		switch (this.f) {
 			case 'north': {
 				let newY = this.y + 1;
-				if (window.canvasView.validateBound(newY, 'maxY')) {
+				if (this.canvasView.isBoundValid(newY, 'maxY')) {
 					this.y = newY;
 				}
 				break;
 			}
 			case 'south': {
 				let newY = this.y - 1;
-				if (window.canvasView.validateBound(newY, 'maxY')) {
+				if (this.canvasView.isBoundValid(newY, 'maxY')) {
 					this.y = newY;
 				}
 				break;
 			}
 			case 'east': {
 				let newX = this.x + 1;
-				if (window.canvasView.validateBound(newX, 'maxX')) {
+				if (this.canvasView.isBoundValid(newX, 'maxX')) {
 					this.x = newX;
 				}
 				break;
 			}
 			case 'west': {
 				let newX = this.x - 1;
-				if (window.canvasView.validateBound(newX, 'maxX')) {
+				if (this.canvasView.isBoundValid(newX, 'maxX')) {
 					this.x = newX;
 				}
 				break;
