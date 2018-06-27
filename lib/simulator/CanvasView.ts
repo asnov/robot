@@ -3,15 +3,21 @@
 import {ExtendedWindowObj} from '../types';
 import {Robot, SIDES_OF_THE_WORLD} from './Robot';
 import {Goal} from './Goal';
+import {getRandomInt, Point, Wall} from '../utils';
 
 declare const window: ExtendedWindowObj;
 export const FIELD_ELEMENT_ID = 'c';
+const NUMBER_OF_HORIZONTAL_CELLS = 4;
+const NUMBER_OF_VERTICAL_CELLS = 4;
+const NUMBER_OF_WALLS = NUMBER_OF_HORIZONTAL_CELLS * NUMBER_OF_VERTICAL_CELLS / 5;	// 20% of cells number
+const NUMBER_OF_ATTEMPTS_FOR_WALL = 100;	// FIXME: non deterministic
+const WALL_WIDTH = 8;	// px
 
 
 export class CanvasView {
 
-	maxX = 7; // x total
-	maxY = 10; // y total
+	maxX = NUMBER_OF_HORIZONTAL_CELLS; 	// x total
+	maxY = NUMBER_OF_VERTICAL_CELLS; 		// y total
 	squareSize = 100; // all grids are equal width and height
 	xStart = 50; // axis x starts from 50px
 	yStart = 50; // axis y starts from 50px
@@ -19,7 +25,7 @@ export class CanvasView {
 	yEnd = this.yStart + this.squareSize * this.maxY; // axis y starts from 50px
 	canvasElement = document.getElementById(FIELD_ELEMENT_ID) as HTMLCanvasElement;
 	context = this.canvasElement.getContext('2d');
-
+	theWall = this.generateWalls(NUMBER_OF_WALLS);
 	robotSize = 25; // is the arrow size actually
 
 	constructor() {
@@ -30,6 +36,7 @@ export class CanvasView {
 	render(robots: Robot[], goal: Goal) {
 		this.context.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
 		this.renderCanvas();
+		this.renderTheWall();
 		this.renderGoal(robots, goal);
 		this.renderAllRobots(robots);
 	}
@@ -56,9 +63,9 @@ export class CanvasView {
 	}
 
 	renderCanvas() {
-		this.context.strokeStyle = '#000';
+		this.context.strokeStyle = '#707070';
 
-		for (let x = 0; x < (this.maxX + 1); x++) { // draw 6 lines
+		for (let x = 0; x < (this.maxX + 1); x++) { 	// draw horizontal lines
 			const currentAxisX = this.xStart + x * this.squareSize;
 			this.context.moveTo(currentAxisX, this.yStart);
 			this.context.lineTo(currentAxisX, this.yEnd);
@@ -66,7 +73,7 @@ export class CanvasView {
 			this.context.strokeText(`${x}`, currentAxisX + 50, this.yEnd + 20); // mark x index
 		}
 
-		for (let y = 0; y < (this.maxY + 1); y++) {
+		for (let y = 0; y < (this.maxY + 1); y++) {		// draw vertical lines
 			const currentAxisY = this.yStart + y * this.squareSize;
 			this.context.moveTo(this.xStart, currentAxisY);
 			this.context.lineTo(this.xEnd, currentAxisY);
@@ -146,8 +153,6 @@ export class CanvasView {
 		const centerY = (this.maxY - goal.y) * 100;
 		const radius = 35;
 
-		const context = this.context;
-
 		const path = new Path2D();
 		path.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
 		path.closePath();
@@ -155,13 +160,79 @@ export class CanvasView {
 		// changing goal color when somebody reached the goal
 		for (let robot of robots) {
 			if (robot.atGoal() && robot.goal === goal) {
-				context.fillStyle = 'blue';
+				this.context.fillStyle = 'blue';
 			}
 		}
 
-		context.stroke(path);
-		context.fill(path);
+		this.context.stroke(path);
+		this.context.fill(path);
 
-		context.fillStyle = 'black';
+		this.context.fillStyle = 'black';
 	}
+
+	addOneWall(existingWalls: Wall[], givenStartPoint?: Point): Wall[] {
+		let startPoint: Point;
+		let stopPoint: Point;
+
+		for (let i = 0; i < NUMBER_OF_ATTEMPTS_FOR_WALL; i++) {
+			startPoint = givenStartPoint || new Point(
+				getRandomInt(1, this.maxX - 1),
+				getRandomInt(1, this.maxY - 1)
+			);
+			const directionAngle = getRandomInt(0, 3);
+			switch (directionAngle) {
+				case 0:
+					stopPoint = new Point(startPoint.x + 1, startPoint.y);
+					break;
+				case 1:
+					stopPoint = new Point(startPoint.x, startPoint.y + 1);
+					break;
+				case 2:
+					stopPoint = new Point(startPoint.x - 1, startPoint.y);
+					break;
+				case 3:
+					stopPoint = new Point(startPoint.x, startPoint.y - 1);
+					break;
+			}
+			if (stopPoint.x < 0 || stopPoint.x > this.maxX || stopPoint.y < 0 || stopPoint.y > this.maxY ||
+				existingWalls.some(wall => wall.identicalTo(new Wall(startPoint, stopPoint)))
+			) {
+				continue;
+			}
+			return [...existingWalls, new Wall(startPoint, stopPoint)];
+		}
+		throw `The wall wasn't generated after ${NUMBER_OF_ATTEMPTS_FOR_WALL} attempts.`;
+	}
+
+	generateWalls(quantity: number): Wall[] {
+		let walls: Wall[] = [];
+		for (let i = 0; i < quantity; i++) {
+			walls = this.addOneWall(walls);
+		}
+		console.log(walls);
+		return walls;
+	}
+
+	renderTheWall() {
+		this.context.fillStyle = '#000';
+
+		for (let wall of this.theWall) {
+			if (wall.start.x === wall.stop.x) {
+				this.context.fillRect(
+					this.xStart + this.squareSize * wall.start.x,
+					this.yStart + this.squareSize * Math.min(wall.start.y, wall.stop.y) - WALL_WIDTH / 2,
+					this.squareSize,
+					WALL_WIDTH
+				);
+			} else {
+				this.context.fillRect(
+					this.xStart + this.squareSize * Math.min(wall.start.x, wall.stop.x) - WALL_WIDTH / 2,
+					this.yStart + this.squareSize * wall.start.y,
+					WALL_WIDTH,
+					this.squareSize
+				);
+			}
+		}
+	}
+
 }
