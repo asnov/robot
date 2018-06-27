@@ -10,7 +10,7 @@ export const FIELD_ELEMENT_ID = 'c';
 const NUMBER_OF_HORIZONTAL_CELLS = 4;
 const NUMBER_OF_VERTICAL_CELLS = 4;
 const NUMBER_OF_WALLS = NUMBER_OF_HORIZONTAL_CELLS * NUMBER_OF_VERTICAL_CELLS / 5;	// 20% of cells number
-const NUMBER_OF_ATTEMPTS_FOR_WALL = 100;	// FIXME: non deterministic
+const NUMBER_OF_ATTEMPTS_FOR_WALL = 99;	// FIXME: probably non deterministic
 const WALL_WIDTH = 8;	// px
 
 
@@ -56,7 +56,7 @@ export class CanvasView {
 				return robot.x === 0;
 			}
 			default:
-				console.log(`Invalid orientation ${robot.f}`);
+				console.warn(`Invalid orientation ${robot.f}`);
 				return false;
 		}
 
@@ -112,8 +112,8 @@ export class CanvasView {
 	}
 
 	renderRobot(robot: Robot) {
-		const robotAxisX = (robot.x + 1) * 100; 					// the center of the destination grid horizontally
-		const robotAxisY = (this.maxY - robot.y) * 100; 	// the center of the destination grid vertically
+		const robotAxisX = (robot.x + 1) * this.squareSize; 					// the center of the destination grid horizontally
+		const robotAxisY = (this.maxY - robot.y) * this.squareSize; 	// the center of the destination grid vertically
 
 		const path = new Path2D();
 		switch (robot.f) {
@@ -149,8 +149,8 @@ export class CanvasView {
 	}
 
 	renderGoal(robots: Robot[], goal: Goal) {
-		const centerX = (goal.x + 1) * 100;
-		const centerY = (this.maxY - goal.y) * 100;
+		const centerX = (goal.x + 1) * this.squareSize;
+		const centerY = (this.maxY - goal.y) * this.squareSize;
 		const radius = 35;
 
 		const path = new Path2D();
@@ -193,6 +193,8 @@ export class CanvasView {
 				case 3:
 					stopPoint = new Point(startPoint.x, startPoint.y - 1);
 					break;
+				default:
+					throw `Error: directionAngle should be 0-3 but it is ${directionAngle}.`;
 			}
 			if (stopPoint.x < 0 || stopPoint.x > this.maxX || stopPoint.y < 0 || stopPoint.y > this.maxY ||
 				existingWalls.some(wall => wall.identicalTo(new Wall(startPoint, stopPoint)))
@@ -209,7 +211,6 @@ export class CanvasView {
 		for (let i = 0; i < quantity; i++) {
 			walls = this.addOneWall(walls);
 		}
-		console.log(walls);
 		return walls;
 	}
 
@@ -217,19 +218,19 @@ export class CanvasView {
 		this.context.fillStyle = '#000';
 
 		for (let wall of this.theWall) {
-			if (wall.start.x === wall.stop.x) {
+			if (wall.start.x === wall.stop.x) {		// vertical line
 				this.context.fillRect(
-					this.xStart + this.squareSize * wall.start.x,
-					this.yStart + this.squareSize * Math.min(wall.start.y, wall.stop.y) - WALL_WIDTH / 2,
-					this.squareSize,
-					WALL_WIDTH
-				);
-			} else {
-				this.context.fillRect(
-					this.xStart + this.squareSize * Math.min(wall.start.x, wall.stop.x) - WALL_WIDTH / 2,
-					this.yStart + this.squareSize * wall.start.y,
+					this.xStart + this.squareSize * wall.start.x - WALL_WIDTH / 2,
+					this.yStart + this.squareSize * (this.maxY - Math.max(wall.start.y, wall.stop.y)),
 					WALL_WIDTH,
-					this.squareSize
+					this.squareSize,
+				);
+			} else {															// horizontal line
+				this.context.fillRect(
+					this.xStart + this.squareSize * Math.min(wall.start.x, wall.stop.x),
+					this.yStart + this.squareSize * (this.maxY - wall.start.y) - WALL_WIDTH / 2,
+					this.squareSize,
+					WALL_WIDTH,
 				);
 			}
 		}

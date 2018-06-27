@@ -14,6 +14,7 @@ export class Point {
 	}
 
 	public identicalTo = (point: Point): boolean => isTheSamePoint(this, point);
+	public toString = () => `[${this.x},${this.y}]`;
 }
 
 
@@ -24,6 +25,7 @@ export class Wall {
 	}
 
 	public identicalTo = (wall: Wall): boolean => isTheSameWall(this, wall);
+	public toString = () => `${this.start}-${this.stop}`;
 }
 
 
