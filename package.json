@@ -12,7 +12,13 @@
     "type": "git",
     "url": "https://github.com/6RiverSystems/sally-simulator.git"
   },
+  "dependencies": {
+    "blueshell": "^1.1.0",
+    "mainloop.js": "^1.0.4"
+  },
   "devDependencies": {
+    "@types/jasmine": "^2.8.8",
+    "@types/mainloop.js": "^1.0.5",
     "copy-webpack-plugin": "^4.5.1",
     "css-loader": "^0.28.11",
     "eslint": "^4.5.0",
@@ -23,7 +29,13 @@
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
     "imports-loader": "^0.8.0",
+    "jasmine": "^3.1.0",
     "json-loader": "0.5.7",
+    "karma": "^2.0.4",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage-istanbul-reporter": "^2.0.1",
+    "karma-jasmine": "^1.1.2",
+    "karma-jasmine-html-reporter": "^1.1.0",
     "modify-babel-preset": "3.2.1",
     "ng-annotate-loader": "0.6.1",
     "ng-annotate-webpack-plugin": "^0.3.0",
@@ -35,9 +47,5 @@
     "webpack": "^4.8.1",
     "webpack-cli": "^2.1.3",
     "webpack-dev-server": "^3.1.4"
-  },
-  "dependencies": {
-    "blueshell": "^1.1.0",
-    "mainloop.js": "^1.0.4"
   }
 }

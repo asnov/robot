@@ -1,6 +1,10 @@
 #libraries
 node_modules
 
+#temp files
+temp
+*.log
+
 #automatically generated files
 lib/**/*.js
 lib/**/*.js.map

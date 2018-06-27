@@ -10,13 +10,19 @@ import {CanvasView} from './CanvasView';
 import {ExtendedWindowObj} from '../types';
 
 declare const window: ExtendedWindowObj;
+export const NUMBER_OF_ROBOTS = 5;
 
 
 export class Simulator {
+
+	inputView: InputView;
+	reportView: ReportView = new ReportView();
+	robots: Robot[];
+	goal: Goal;
+
 	constructor() {
-		window.inputView = new InputView();
+		this.inputView = new InputView();
 		window.canvasView = new CanvasView();
-		window.reportView = new ReportView();
 
 		this.restart();
 
@@ -24,18 +30,18 @@ export class Simulator {
 			.setUpdate(() => {
 			})
 			.setDraw(() => {
-				window.canvasView.render();
+				window.canvasView.render(this.robots, this.goal);
+				this.reportView.renderReport(this.robots);
 			})
 			.start();
-
 	}
 
-	getCurrentRobot() {
-		return window.robot;
+	getRobotById(robotId: number) {
+		return this.robots[robotId];
 	}
 
 	resetContents() {
-		window.reportView.clear();
+		this.reportView.clear();
 	};
 
 	/* --------------------------------------------------- */
@@ -43,12 +49,28 @@ export class Simulator {
 	/*         end of command functions
 	 /* --------------------------------------------------- */
 	printErrors(msg) {
-		window.reportView.renderErrors(msg);
+		console.error(msg);
+		this.reportView.renderErrors(msg);
 	}
 
 	restart() {
-		window.robot = new Robot();
-		window.goal = new Goal();
+		this.goal = new Goal();
+		this.robots = [];
+		while (this.robots.length < NUMBER_OF_ROBOTS) {
+			const newRobot = Robot.assemble(this.goal);
+			// checking position is empty
+			if (
+				this.robots.some(robot => (
+					robot.x === newRobot.x &&
+					robot.y === newRobot.y)) ||
+				this.goal.x === newRobot.x &&
+				this.goal.y === newRobot.y
+			) {
+				continue;
+			}
+			this.robots.push(newRobot);
+			console.log(`Robot "${newRobot.color}" positioned at ${newRobot.x}, ${newRobot.y}, ${newRobot.f}`);
+		}
 	}
 
 }

@@ -2,6 +2,7 @@
 
 import {getRandomInt} from '../utils';
 
+
 export class Goal {
 
 	x = getRandomInt(0, 4);
