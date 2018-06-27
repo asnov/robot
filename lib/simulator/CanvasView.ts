@@ -7,8 +7,8 @@ import {getRandomInt, Point, Wall} from '../utils';
 
 declare const window: ExtendedWindowObj;
 export const FIELD_ELEMENT_ID = 'c';
-const NUMBER_OF_HORIZONTAL_CELLS = 7;
-const NUMBER_OF_VERTICAL_CELLS = 10;
+const NUMBER_OF_HORIZONTAL_CELLS = 5;
+const NUMBER_OF_VERTICAL_CELLS = 5;
 const NUMBER_OF_WALLS = NUMBER_OF_HORIZONTAL_CELLS * NUMBER_OF_VERTICAL_CELLS / 5;	// 20% of cells number
 const NUMBER_OF_ATTEMPTS_FOR_WALL = 99;	// FIXME: probably non deterministic
 const WALL_WIDTH = 8;	// px
@@ -112,8 +112,11 @@ export class CanvasView {
 	}
 
 	renderRobot(robot: Robot) {
-		const robotAxisX = (robot.x + 1) * this.squareSize; 					// the center of the destination grid horizontally
-		const robotAxisY = (this.maxY - robot.y) * this.squareSize; 	// the center of the destination grid vertically
+		const x = robot.lastX + (robot.x - robot.lastX) * robot.theta;
+		const y = robot.lastY + (robot.y - robot.lastY) * robot.theta;
+
+		const robotAxisX = (x + 1) * this.squareSize; 					// the center of the destination grid horizontally
+		const robotAxisY = (this.maxY - y) * this.squareSize; 	// the center of the destination grid vertically
 
 		const path = new Path2D();
 		switch (robot.f) {

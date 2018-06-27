@@ -25,11 +25,21 @@ export class Simulator {
 		this.restart();
 
 		MainLoop
-			.setUpdate(() => {
+			.setUpdate(delta => {
+				for (let robot of this.robots) {
+					robot.update(delta);
+				}
 			})
 			.setDraw(() => {
 				this.canvasView.render(this.robots, this.goal);
 				this.reportView.renderReport(this.robots);
+			})
+			.setEnd((fps, panic) => {
+				this.reportView.showFps(fps);
+				if (panic) {
+					const discardedTime = Math.round(MainLoop.resetFrameDelta());
+					console.warn('Main loop panicked, probably because the browser tab was put in the background. Discarding ' + discardedTime + 'ms');
+				}
 			})
 			.start();
 	}
