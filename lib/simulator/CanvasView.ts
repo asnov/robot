@@ -7,8 +7,8 @@ import {getRandomInt, Point, Wall} from '../utils';
 
 declare const window: ExtendedWindowObj;
 export const FIELD_ELEMENT_ID = 'c';
-const NUMBER_OF_HORIZONTAL_CELLS = 4;
-const NUMBER_OF_VERTICAL_CELLS = 4;
+const NUMBER_OF_HORIZONTAL_CELLS = 7;
+const NUMBER_OF_VERTICAL_CELLS = 10;
 const NUMBER_OF_WALLS = NUMBER_OF_HORIZONTAL_CELLS * NUMBER_OF_VERTICAL_CELLS / 5;	// 20% of cells number
 const NUMBER_OF_ATTEMPTS_FOR_WALL = 99;	// FIXME: probably non deterministic
 const WALL_WIDTH = 8;	// px
