@@ -10,20 +10,25 @@ export const FIELD_ELEMENT_ID = 'c';
 
 export class CanvasView {
 
-	maxX = 3; // x total
-	maxY = 3; // y total
+	maxX = 7; // x total
+	maxY = 10; // y total
 	squareSize = 100; // all grids are equal width and height
 	xStart = 50; // axis x starts from 50px
 	yStart = 50; // axis y starts from 50px
 	xEnd = this.xStart + this.squareSize * this.maxX; // axis x starts from 50px
 	yEnd = this.yStart + this.squareSize * this.maxY; // axis y starts from 50px
-	canvas = document.getElementById(FIELD_ELEMENT_ID) as HTMLCanvasElement;
-	context = this.canvas.getContext('2d');
+	canvasElement = document.getElementById(FIELD_ELEMENT_ID) as HTMLCanvasElement;
+	context = this.canvasElement.getContext('2d');
 
 	robotSize = 25; // is the arrow size actually
 
+	constructor() {
+		this.canvasElement.width = 51 + this.squareSize * this.maxX;
+		this.canvasElement.height = 80 + this.squareSize * this.maxY;
+	}
+
 	render(robots: Robot[], goal: Goal) {
-		this.context.clearRect(0, 0, 551, 580); // TODO: Magic dimensions from index.ejs
+		this.context.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
 		this.renderCanvas();
 		this.renderGoal(robots, goal);
 		this.renderAllRobots(robots);
