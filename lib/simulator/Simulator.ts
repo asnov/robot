@@ -15,14 +15,14 @@ export const NUMBER_OF_ROBOTS = 5;
 
 export class Simulator {
 
-	inputView: InputView;
+	canvasView: CanvasView = window.canvasView = new CanvasView();
 	reportView: ReportView = new ReportView();
+	inputView: InputView;
 	robots: Robot[];
 	goal: Goal;
 
 	constructor() {
 		this.inputView = new InputView();
-		window.canvasView = new CanvasView();
 
 		this.restart();
 
@@ -30,7 +30,7 @@ export class Simulator {
 			.setUpdate(() => {
 			})
 			.setDraw(() => {
-				window.canvasView.render(this.robots, this.goal);
+				this.canvasView.render(this.robots, this.goal);
 				this.reportView.renderReport(this.robots);
 			})
 			.start();
