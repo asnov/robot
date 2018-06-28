@@ -1,7 +1,7 @@
 'use strict';
 
 import {Behavior} from '../behavior';
-import {getRandomInt} from '../utils';
+import {getRandomInt, Point, Wall} from '../utils';
 import {ExtendedWindowObj} from '../types';
 import {Goal} from './Goal';
 import {CanvasView} from './CanvasView';
@@ -62,6 +62,14 @@ export class Robot {
 		};
 	}
 
+	isClean(wallToCheck: Wall): boolean {
+		const isBlocked = this.canvasView.theWall.some(wall => wall.identicalTo(wallToCheck));
+		if (isBlocked) {
+			window.simulator.printErrors(`Robot ${this.color}[${this.x},${this.y}]: there is a wall in front of me`);
+		}
+		return !isBlocked;
+	}
+
 
 	/* --------------------------------------------------- *
 	 *         the following are command functions				 *
@@ -86,40 +94,44 @@ export class Robot {
 	}
 
 	move() {
+		let wallToCheck: Wall;
 
 		switch (this.f) {
 			case 'north': {
+				wallToCheck = new Wall(new Point(this.x, this.y + 1), new Point(this.x + 1, this.y + 1));
 				let newY = this.y + 1;
-				if (this.canvasView.isBoundValid(newY, 'maxY')) {
+				if (this.canvasView.isBoundValid(newY, 'maxY') && this.isClean(wallToCheck)) {
 					this.y = newY;
 				}
 				break;
 			}
 			case 'south': {
+				wallToCheck = new Wall(new Point(this.x, this.y), new Point(this.x + 1, this.y));
 				let newY = this.y - 1;
-				if (this.canvasView.isBoundValid(newY, 'maxY')) {
+				if (this.canvasView.isBoundValid(newY, 'maxY') && this.isClean(wallToCheck)) {
 					this.y = newY;
 				}
 				break;
 			}
 			case 'east': {
+				wallToCheck = new Wall(new Point(this.x + 1, this.y), new Point(this.x + 1, this.y + 1));
 				let newX = this.x + 1;
-				if (this.canvasView.isBoundValid(newX, 'maxX')) {
+				if (this.canvasView.isBoundValid(newX, 'maxX') && this.isClean(wallToCheck)) {
 					this.x = newX;
 				}
 				break;
 			}
 			case 'west': {
+				wallToCheck = new Wall(new Point(this.x, this.y), new Point(this.x, this.y + 1));
 				let newX = this.x - 1;
-				if (this.canvasView.isBoundValid(newX, 'maxX')) {
+				if (this.canvasView.isBoundValid(newX, 'maxX') && this.isClean(wallToCheck)) {
 					this.x = newX;
 				}
 				break;
 			}
 			default:
-				break;
+				throw `wrong direction: ${this.f}`;
 		}
-
 
 	}
 

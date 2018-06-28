@@ -26,7 +26,7 @@ class AtWall extends Blueshell.Action<any, any> {		// FIXME: specify the types
 
 	onEvent(robot, event) {
 		if (event.wallInFront) {
-			console.log('there is a wall in front of me');
+			console.warn('there is a wall in front of me');
 			// do something about it
 		}
 

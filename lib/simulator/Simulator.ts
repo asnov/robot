@@ -47,7 +47,7 @@ export class Simulator {
 	/*         end of command functions
 	 /* --------------------------------------------------- */
 	printErrors(msg) {
-		console.error(msg);
+		console.warn(msg);
 		this.reportView.renderErrors(msg);
 	}
 
