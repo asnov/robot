@@ -26,7 +26,7 @@ export class CanvasView {
 	canvasElement = document.getElementById(FIELD_ELEMENT_ID) as HTMLCanvasElement;
 	context = this.canvasElement.getContext('2d');
 	theWall = this.generateWalls(NUMBER_OF_WALLS);
-	robotSize = 25; // is the arrow size actually
+	robotSize = this.squareSize / 4; // is the arrow size actually
 
 	constructor() {
 		this.canvasElement.width = 51 + this.squareSize * this.maxX;
@@ -118,31 +118,24 @@ export class CanvasView {
 		const robotAxisX = (x + 1) * this.squareSize; 					// the center of the destination grid horizontally
 		const robotAxisY = (this.maxY - y) * this.squareSize; 	// the center of the destination grid vertically
 
-		const path = new Path2D();
-		switch (robot.f) {
-			case 'north':
-				path.moveTo(robotAxisX, robotAxisY - this.robotSize);
-				path.lineTo(robotAxisX - this.robotSize, robotAxisY);
-				path.lineTo(robotAxisX + this.robotSize, robotAxisY);
-				break;
-			case 'south':
-				path.moveTo(robotAxisX, robotAxisY + this.robotSize);
-				path.lineTo(robotAxisX - this.robotSize, robotAxisY);
-				path.lineTo(robotAxisX + this.robotSize, robotAxisY);
-				break;
-			case 'east':
-				path.moveTo(robotAxisX + this.robotSize, robotAxisY);
-				path.lineTo(robotAxisX, robotAxisY - this.robotSize);
-				path.lineTo(robotAxisX, robotAxisY + this.robotSize);
-				break;
-			case 'west':
-				path.moveTo(robotAxisX - this.robotSize, robotAxisY);
-				path.lineTo(robotAxisX, robotAxisY - this.robotSize);
-				path.lineTo(robotAxisX, robotAxisY + this.robotSize);
-				break;
-			default:
-				break;
+		const lastIndex = SIDES_OF_THE_WORLD.indexOf(robot.lastF);
+		let newIndex = SIDES_OF_THE_WORLD.indexOf(robot.f);
+
+		if (newIndex === 0 && lastIndex === 3) {
+			newIndex = 4;
 		}
+		if (newIndex === 3 && lastIndex === 0) {
+			newIndex = -1;
+		}
+
+		const lastAngle: number = Math.PI * lastIndex / 2;
+		const newAngle: number = Math.PI * newIndex / 2;
+		const angle = lastAngle + (newAngle - lastAngle) * robot.theta;
+
+		const path = new Path2D();
+		path.moveTo(robotAxisX + this.robotSize * Math.sin(angle), robotAxisY - this.robotSize * Math.cos(angle));
+		path.lineTo(robotAxisX - this.robotSize * Math.cos(angle), robotAxisY - this.robotSize * Math.sin(angle));
+		path.lineTo(robotAxisX + this.robotSize * Math.cos(angle), robotAxisY + this.robotSize * Math.sin(angle));
 
 		path.closePath();
 
