@@ -13,7 +13,10 @@ _Note_: this is _not_ a sorted priority list.
 * Use [blueshell](https://www.npmjs.com/package/blueshell) to enhance the AI to find the goal
 * Replace canvas view with PixiJS (or another graphics package)
     * [X] Add ability to change grid dimensions
-    * [ ] Add smooth motion rendering as the robot moves
-* Port the code to Angular (or another framework)    
+    * [X] Add smooth motion rendering as the robot moves
+* Port the code to Angular (or another framework)
+* unit-tests  
+* e2e-tests  
+* add connected pieces wall generation mode  
 * Other enhancements?
 

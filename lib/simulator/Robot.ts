@@ -16,6 +16,11 @@ let behavior = new Behavior();
 
 export class Robot {
 
+	theta = 0;
+	lastX = this.x;
+	lastY = this.y;
+	lastF = this.f;
+
 	static assemble = (goal: Goal, canvasView: CanvasView): Robot => new Robot(
 		getRandomInt(0, canvasView.maxX - 1),
 		getRandomInt(0, canvasView.maxY - 1),
@@ -95,6 +100,9 @@ export class Robot {
 
 	move() {
 		let wallToCheck: Wall;
+		this.theta = 0;
+		this.lastX = this.x;
+		this.lastY = this.y;
 
 		switch (this.f) {
 			case 'north': {
@@ -144,6 +152,9 @@ export class Robot {
 	}
 
 	rotate(clockwise) {
+		this.theta = 0;
+		this.lastF = this.f;
+
 		let originalFacing = this.f,
 			originalFacingIndex = SIDES_OF_THE_WORLD.indexOf(originalFacing),
 			newFacingIndex,
@@ -164,7 +175,17 @@ export class Robot {
 		}
 
 		this.f = SIDES_OF_THE_WORLD[newFacingIndex];
+	}
 
+	update(delta: number) {
+		if (this.theta < 1) {
+			this.theta += delta / 1000;
+		} else {
+			this.theta = 1;
+			this.lastX = this.x;
+			this.lastY = this.y;
+			this.lastF = this.f;
+		}
 	}
 
 }

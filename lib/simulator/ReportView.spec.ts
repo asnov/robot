@@ -1,4 +1,4 @@
-import {ERROR_ELEMENT_ID, REPORT_ELEMENT_ID, ReportView} from './ReportView';
+import {ERROR_ELEMENT_ID, FPS_COUNTER_ELEMENT_ID, INFO_ELEMENT_ID, REPORT_ELEMENT_ID, ReportView} from './ReportView';
 import Spy = jasmine.Spy;
 import {Robot, SIDES_OF_THE_WORLD} from './Robot';
 
@@ -14,6 +14,12 @@ const trivialDOM = {
 	[ERROR_ELEMENT_ID]: {
 		innerHTML: 'some old text in the error field',
 	},
+	[FPS_COUNTER_ELEMENT_ID]: {
+		textContent: '',
+	},
+	[INFO_ELEMENT_ID]: {
+		textContent: '',
+	}
 };
 
 global.document = {
@@ -34,7 +40,6 @@ describe('ReportView', () => {
 
 	it('should be created', () => {
 		expect(reportView).toBeTruthy();
-		expect(getElementById.calls.count()).toBe(2);
 	});
 
 	it(`should request html element with the "${REPORT_ELEMENT_ID}" id`, () => {
@@ -43,8 +48,8 @@ describe('ReportView', () => {
 	});
 
 	it(`should request html element with the "${ERROR_ELEMENT_ID}" id`, () => {
-		expect(getElementById.calls.mostRecent().args.length).toEqual(1);
-		expect(getElementById.calls.mostRecent().args[0]).toEqual(ERROR_ELEMENT_ID);
+		expect(getElementById.calls.argsFor(1).length).toEqual(1);
+		expect(getElementById.calls.argsFor(1)[0]).toEqual(ERROR_ELEMENT_ID);
 	});
 
 	describe('.renderReport()', () => {
